@@ -1,76 +1,33 @@
-import React from "react";
-// import logo from "./logo.svg";
-import "./App.css";
-import { useRef, useEffect, useState } from "react";
-import { TweenMax, Power3 } from "gsap";
+import React, { useRef, useEffect } from "react";
+import "./App.scss";
+import People from "./images/mpumelelo.jpg";
+import CSSRulePlugin from "gsap/CSSRulePlugin";
 
-function App() {
-  //create ref
-  let app = useRef(null);
-  let circle = useRef(null);
-  let circleRed = useRef(null);
-  let circleBlue = null;
+import { TimelineLite, Power2 } from "gsap";
 
-  const [state, setstate] = useState(false);
-
-  const handleExpand = () => {
-    TweenMax.to(circleRed, 0.8, {
-      width: 200,
-      height: 200,
-      ease: Power3.easeOut
-    });
-    setstate(true);
-  };
-  const handleShrink = () => {
-    TweenMax.to(circleRed, 0.8, {
-      width: 75,
-      height: 75,
-      ease: Power3.easeOut
-    });
-    setstate(false);
-  };
-  
+const App = () => {
+  //use ref hook
+  let container = useRef(null);
+  let image = useRef(null);
+  let imageReveal = CSSRulePlugin.getRule(".img-container:after");
+  let tl = new TimelineLite();
   useEffect(() => {
-    TweenMax.to(app, 0, { css: { visibility: "visible" } });
-    // TweenMax.from(circle, 0.8, { opacity: 0, x: 40, ease: Power3.easeOut });
-    // TweenMax.from(circleRed, 0.8, {
-    //   opacity: 0,
-    //   x: 40,
-    //   ease: Power3.easeOut,
-    //   delay: 0.2
-    // });
-    // TweenMax.from(circleBlue, 0.8, {
-    //   opacity: 0,
-    //   x: 40,
-    //   ease: Power3.easeOut,
-    //   delay: 0.4
-    // });
-    TweenMax.staggerFrom(
-      [circle, circleRed, circleBlue],
-      0.8,
-      { opacity: 0, x: 40, ease: Power3.easeOut },
-      0.2
-    );
-  }, []);
+    // console.log(container, image);
+    tl.to(container, 0, { css: { visibility: "visible" } })
+      .to(imageReveal, 1.4, { width: "0%", ease: Power2.easeInOut })
+      .from(image, 1.4, { scale: 1.6, ease: Power2.easeInOut, delay: -1.6 });
+  });
   return (
-    <div ref={el => (app = el)} className="App">
-      <header className="App-header">
-        <div className="circle-container">
-          <div ref={el => (circle = el)} className="circle"></div>
-          <div
-            onMouseOver={state !== true ? handleExpand : handleShrink}
-            ref={el => (circleRed = el)}
-            className="circle red"
-          ></div>
-          <div
-            onMouseOver={state !== true ? handleExpand : handleShrink}
-            ref={el => (circleBlue = el)}
-            className="circle blue"
-          ></div>
-        </div>
-      </header>
-    </div>
+    <section className="main">
+      <div ref={el => (container = el)} className="container">
+        <>
+          <div className="img-container">
+            <img ref={el => (image = el)} src={People} alt="people" />
+          </div>
+        </>
+      </div>
+    </section>
   );
-}
+};
 
 export default App;
